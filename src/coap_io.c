@@ -36,6 +36,7 @@
 #include "debug.h"
 #include "mem.h"
 #include "coap_io.h"
+#include "pdu.h"
 
 #ifdef WITH_POSIX
 /* define generic PKTINFO for IPv4 */
@@ -552,10 +553,10 @@ coap_network_read(coap_endpoint_t *ep, coap_packet_t **packet) {
 #endif /* IP_PKTINFO */
     }
 
-    if (!is_local_if(&ep->addr, &(*packet)->dst)) {
-      coap_log(LOG_DEBUG, "packet received on wrong interface, dropped\n");
-      goto error;
-    }
+    // if (!is_local_if(&ep->addr, &(*packet)->dst)) {
+    //   coap_log(LOG_DEBUG, "packet received on wrong interface, dropped\n");
+    //   goto error;
+    // }
   }
 #endif /* WITH_POSIX */
 #ifdef WITH_CONTIKI
