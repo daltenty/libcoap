@@ -15,6 +15,7 @@
 #include <unistd.h>
 #include <stdio.h>
 #include <ctype.h>
+#include <stdbool.h>
 #include <sys/select.h>
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -60,6 +61,7 @@ coap_tick_t max_wait;                   /* global timeout (changed by set_timeou
 
 unsigned int obs_seconds = 30;          /* default observe time */
 coap_tick_t obs_wait = 0;               /* timeout for current subscription */
+bool repeat = false;                    /* repeat the process if requested */
 
 #define min(a,b) ((a) < (b) ? (a) : (b))
 
@@ -1070,7 +1072,7 @@ main(int argc, char **argv) {
   coap_tid_t tid = COAP_INVALID_TID;
   int create_uri_opts = 1;
 
-  while ((opt = getopt(argc, argv, "Na:b:e:f:g:m:p:s:t:o:v:A:B:O:P:T:U")) != -1) {
+  while ((opt = getopt(argc, argv, "Nra:b:e:f:g:m:p:s:t:o:v:A:B:O:P:T:U")) != -1) {
     switch (opt) {
     case 'a' :
       strncpy(node_str, optarg, NI_MAXHOST-1);
@@ -1114,6 +1116,9 @@ main(int argc, char **argv) {
         /* copy filename including trailing zero */
         memcpy(output_file.s, optarg, output_file.length + 1);
       }
+      break;
+    case 'r':
+      repeat=true;
       break;
     case 'A' :
       cmdline_content_type(optarg,COAP_OPTION_ACCEPT);
@@ -1165,6 +1170,7 @@ main(int argc, char **argv) {
     port = uri.port;
   }
 
+  do {
   /* resolve destination address where server should be sent */
   res = resolve_address(&server, &dst.addr.sa);
 
@@ -1296,10 +1302,12 @@ main(int argc, char **argv) {
     }
   }
 
-  close_output();
+  
 
-  coap_delete_list(optlist);
+  
   coap_free_context( ctx );
-
+  } while(repeat);
+  coap_delete_list(optlist);
+  close_output();
   return 0;
 }
