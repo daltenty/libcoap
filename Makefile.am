@@ -27,7 +27,8 @@ EXTRA_DIST = \
   tests/test_uri.h \
   tests/test_wellknown.h
 
-AM_CFLAGS = -I$(top_builddir)/include/coap -I$(top_srcdir)/include/coap $(WARNING_CFLAGS) -std=c99
+AM_CFLAGS = -I$(top_builddir)/include/coap -I$(top_srcdir)/include/coap $(WARNING_CFLAGS) -std=c99 -fPIC -U_FORTIFY_SOURCE
+AM_LDFLAGS = -pie -rdynamic
 
 SUBDIRS = . $(DOC_DIR) tests examples
 
