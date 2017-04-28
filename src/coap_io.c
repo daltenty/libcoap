@@ -142,7 +142,8 @@ coap_new_endpoint(const coap_address_t *addr, int flags) {
   struct coap_endpoint_t *ep;
 
   if (sockfd < 0) {
-    coap_log(LOG_WARNING, "coap_new_endpoint: socket");
+    coap_log(LOG_WARNING, "coap_new_endpoint: socket\n");
+    coap_log(LOG_WARNING,strerror(errno));
     return NULL;
   }
 
